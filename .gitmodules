@@ -1,0 +1,3 @@
+[submodule "external/HttpServer"]
+	path = external/HttpServer
+	url = https://github.com/Jacob00524/HttpServer.git
