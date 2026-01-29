@@ -203,13 +203,13 @@ static Task create_task_from_json(cJSON *json_root)
     json_tmp = cJSON_GetObjectItem(json_root, "name");
     if (!json_tmp)
         return NULL;
-    if (!strncpy(t->name, json_tmp->valuestring, sizeof(t->name)))
+    if (!snprintf(t->name, sizeof(t->name), "%s", json_tmp->valuestring))
         return NULL;
 
     json_tmp = cJSON_GetObjectItem(json_root, "description");
     if (!json_tmp)
         return NULL;
-    if (!strncpy(t->description, json_tmp->valuestring, sizeof(t->description)))
+    if (!snprintf(t->description, sizeof(t->description), "%s", json_tmp->valuestring))
         return NULL;
 
     json_tmp = cJSON_GetObjectItem(json_root, "status");
@@ -442,7 +442,7 @@ char *TASK_open_task_list(int year, int month, int day, task_settings *settings)
 {
     FILE *f;
     char file_path[1180], *file_content;
-    size_t file_length;
+    size_t file_length, read_length;
 
     sprintf(file_path, "%s/%d/%d/%d.json", settings->save_folder, year, month, day);
     f = fopen(file_path, "r");
@@ -454,8 +454,13 @@ char *TASK_open_task_list(int year, int month, int day, task_settings *settings)
     fseek(f, 0, SEEK_SET);
 
     file_content = calloc(file_length + 1, sizeof(char));
-    fread(file_content, sizeof(char), file_length, f);
+    read_length = fread(file_content, sizeof(char), file_length, f);
     fclose(f);
+    if (read_length != file_length)
+    {
+        free(file_content);
+        return NULL;
+    }
     return file_content;
 }
 
@@ -652,14 +657,14 @@ int TASK_SET_id(Task task, task_settings *settings, unsigned long new_id)
 }
 int TASK_SET_name(Task task, task_settings *settings, char *new_name)
 {
-    strncpy(task->name, new_name, sizeof(task->name));
+    snprintf(task->name, sizeof(task->name), "%s", new_name);
     if (task->parent)
         return TASK_save_task_list(task->parent, settings, NULL);
     return 1;
 }
 int TASK_SET_description(Task task, task_settings *settings, char *new_description)
 {
-    strncpy(task->name, new_description, sizeof(task->name));
+    snprintf(task->name, sizeof(task->name), "%s", new_description);
     if (task->parent)
         return TASK_save_task_list(task->parent, settings, NULL);
     return 1;

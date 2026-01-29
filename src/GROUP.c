@@ -33,7 +33,7 @@ static char *create_all_fetch(char *directory)
     while ((entry = readdir(dir)) != NULL)
     {
         FILE *f;
-        size_t file_length;
+        size_t file_length, read_length;
         cJSON *tmp;
         char fullpath[1024], *file_content;
         if (entry->d_name[0] == '.')
@@ -45,8 +45,13 @@ static char *create_all_fetch(char *directory)
         file_length = ftell(f);
         fseek(f, 0, SEEK_SET);
         file_content = calloc(file_length + 1, sizeof(char));
-        fread(file_content, sizeof(char), file_length, f);
+        read_length = fread(file_content, sizeof(char), file_length, f);
         fclose(f);
+        if (read_length != file_length)
+        {
+            free(file_content);
+            return NULL;
+        }
         tmp = cJSON_Parse(file_content);
         free(file_content);
         if (!tmp)
@@ -130,7 +135,7 @@ HttpResponse handle_taskgroups(HttpRequest *request)
         }
         else
         {
-            strncpy(new_group->name, name, sizeof(new_group->name));
+            snprintf(new_group->name, sizeof(new_group->name), "%s", name);
             if (new_group->ids && new_group->count > 0)
                 free(new_group->ids);
             new_group->ids = id_array;

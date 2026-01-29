@@ -232,8 +232,8 @@ HttpResponse handle_tasks(HttpRequest *request)
                 cJSON_Delete(json_root);
                 return return_http_error_code(*request, 400, "Bad Request", settings);
             }
-            strncpy(new_task->name, title, sizeof(new_task->name));
-            strncpy(new_task->description, description, sizeof(new_task->description));
+            snprintf(new_task->name, sizeof(new_task->name), "%s", title);
+            snprintf(new_task->description, sizeof(new_task->description), "%s", description);
             TASK_SET_time_due(new_task, &t_settings, &time_due);
             new_task->sort_order = sort_order;
             if (!oldList)

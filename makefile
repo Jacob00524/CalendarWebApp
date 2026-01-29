@@ -13,6 +13,9 @@ RELEASE_CFLAGS = -O4 -Wall -Wextra
 HTTP_SO = external/HttpServer/libhttp.so
 CJSON_SO = external/HttpServer/external/cJSON/libcjson.so
 
+CERT = cert.pem
+KEY = key.pem
+
 ifeq ($(MODE),debug)
 	CFLAGS = $(DEBUG_CFLAGS)
 	LDFLAGS = $(DEBUG_LDFLAGS)
@@ -24,7 +27,12 @@ endif
 SRC := $(wildcard src/*.c)
 OBJ := $(patsubst src/%.c, $(BUILD_FOLDER)/%.o, $(SRC))
 
-default: $(HTTP_SO) $(TARGET) $(EXAMPLE_TARGET)
+default: $(HTTP_SO) $(TARGET) $(EXAMPLE_TARGET) $(CERT) $(KEY)
+
+$(CERT) $(KEY):
+	$(MAKE) -C external/HttpServer cert
+	cp external/HttpServer/cert.pem .
+	cp external/HttpServer/key.pem .
 
 $(TARGET): $(OBJ)
 	$(CC) $(OBJ) -o $(BUILD_FOLDER)/$@ $(LDFLAGS) \
@@ -35,9 +43,6 @@ $(TARGET): $(OBJ)
 $(HTTP_SO) $(CJSON_SO):
 	git submodule update --init --recursive
 	$(MAKE) -C external/HttpServer
-	$(MAKE) -C external/HttpServer cert
-	cp external/HttpServer/cert.pem .
-	cp external/HttpServer/key.pem .
 	cp $(HTTP_SO) .
 	cp -L $(CJSON_SO) .
 

@@ -114,7 +114,7 @@ char *TASK_save_task_group(task_group group)
 static int TASK_load_task_group(task_group group, unsigned long id)
 {
     char path[1024], *content;
-    size_t length;
+    size_t length, read_length;
     cJSON *json_root, *temp;
     task_settings settings = get_task_settings();
     FILE *f;
@@ -129,8 +129,13 @@ static int TASK_load_task_group(task_group group, unsigned long id)
     fseek(f, 0, SEEK_SET);
 
     content = calloc(length + 1, sizeof(char));
-    fread(content, sizeof(char), length, f);
+    read_length = fread(content, sizeof(char), length, f);
     fclose(f);
+    if (read_length != length)
+    {
+        free(content);
+        return 0;
+    }
 
     json_root = cJSON_Parse(content);
     if (!json_root)
@@ -139,11 +144,11 @@ static int TASK_load_task_group(task_group group, unsigned long id)
     temp = cJSON_GetObjectItem(json_root, "name");
     if (!temp)
         goto ERR;
-    strncpy(group->name, temp->valuestring, sizeof(group->name));
+    snprintf(group->name, sizeof(group->name), "%s", temp->valuestring);
     temp = cJSON_GetObjectItem(json_root, "description");
     if (!temp)
         goto ERR;
-    strncpy(group->description, temp->valuestring, sizeof(group->description));
+    snprintf(group->description, sizeof(group->description), "%s", temp->valuestring);
     temp = cJSON_GetObjectItem(json_root, "colour");
     if (!temp)
         goto ERR;

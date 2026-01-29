@@ -2,9 +2,10 @@
 build/
 *.o
 *.so
-example.out
+*.out
 server_settings.json
 *.pem
+save_data/
 
 # editor junk
 *.swp
