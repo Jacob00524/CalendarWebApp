@@ -209,8 +209,12 @@ static Task create_task_from_json(cJSON *json_root)
     json_tmp = cJSON_GetObjectItem(json_root, "description");
     if (!json_tmp)
         return NULL;
-    if (!snprintf(t->description, sizeof(t->description), "%s", json_tmp->valuestring))
-        return NULL;
+    if (json_tmp->valuestring && json_tmp->valuestring[0])
+    {
+        if (!snprintf(t->description, sizeof(t->description), "%s", json_tmp->valuestring))
+            return NULL;
+    }else
+        t->description[0] = 0;
 
     json_tmp = cJSON_GetObjectItem(json_root, "status");
     if (!json_tmp)
@@ -532,8 +536,8 @@ static int TASK_load_task_list(Task_List list_out, int year, int month, int day,
             free(list_out->tasks);
             goto ERR;
         }
+        list_out->tasks[_t]->parent = list_out;
         _t++;
-        list_out->tasks[i]->parent = list_out;
     }
     list_out->task_count = _t;
 
