@@ -82,6 +82,7 @@ HttpResponse handle_tasks(HttpRequest *request)
         secure_send(request->connection_info.ssl, header_data, strlen(header_data));
         secure_send(request->connection_info.ssl, file_data, response.content_length);
         free(file_data);
+        cJSON_Delete(json_root);
         return response;
     }
 
@@ -258,6 +259,7 @@ HttpResponse handle_tasks(HttpRequest *request)
         secure_send(request->connection_info.ssl, header_data, strlen(header_data));
         secure_send(request->connection_info.ssl, file_data, response.content_length);
         free(file_data);
+        cJSON_Delete(json_root);
 
         return response;
     }

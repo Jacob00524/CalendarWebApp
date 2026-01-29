@@ -489,7 +489,10 @@ static int TASK_load_task_list(Task_List list_out, int year, int month, int day,
     memset(list_out, 0, sizeof(*list_out));
     json_root = cJSON_Parse(file_content);
     if (!json_root)
+    {
+        free(file_content);
         return 0;
+    }
 
     json_tmp = cJSON_GetObjectItem(json_root, "date_created");
     if (!json_tmp)
@@ -535,9 +538,12 @@ static int TASK_load_task_list(Task_List list_out, int year, int month, int day,
     list_out->task_count = _t;
 
     cJSON_Delete(json_root);
+    free(file_content);
     return 1;
 
 ERR:
+    if (file_content)
+        free(file_content);
     cJSON_Delete(json_root);
     return 0;
 }
