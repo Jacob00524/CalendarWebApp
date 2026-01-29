@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calendar</title>
+
+  <link rel="stylesheet" href="css/task.css" />
+  <link rel="stylesheet" href="css/picker.css" />
+</head>
+
+<body>
+    <div id="group-header" class="group-header">
+        <button id="menu-button" class="group-button">
+            Back
+        </button>
+        <button id="group-button" class="group-button">
+            Add Group
+        </button>
+        <div id="group-header-content" class="group-header-content"></div>
+    </div>
+    <div id="group-panel" class="group-panel">
+        <div class="group-panel-header">
+            <h3>Groups</h3>
+            <button class="group-close" id="closeGroups">✕</button>
+        </div>
+
+        <div class="group-form">
+            <label>
+                <p class="group-label">Group Name</p>
+                <input id="groupName" type="text" />
+            </label>
+
+            <label>
+                <p class="group-label">Group Colour</p>
+                <input id="groupColor" type="color" value="#cc3333" />
+            </label>
+        </div>
+
+            <hr class="group-sep"/>
+
+        <div class="picker">
+        <div class="pane">
+            <div class="pane-head">
+            <div class="pane-title">Available tasks</div>
+            <div class="pane-meta"><span id="availCount">0</span></div>
+            </div>
+
+            <input class="picker-search" id="availSearch" placeholder="Search available…" />
+
+            <div class="picker-actions-row">
+            <button class="mini-btn" id="availSelectAll">Select all</button>
+            <button class="mini-btn" id="availClear">Clear</button>
+            </div>
+
+            <div class="task-list" id="availList"></div>
+        </div>
+
+        <div class="picker-mid">
+            <button class="mid-btn" id="addToGroup" title="Add selected to group">Add →</button>
+            <button class="mid-btn" id="removeFromGroup" title="Remove selected from group">← Remove</button>
+        </div>
+
+        <div class="pane">
+            <div class="pane-head">
+            <div class="pane-title">In this group</div>
+            <div class="pane-meta"><span id="groupCount">0</span></div>
+            </div>
+
+            <input class="picker-search" id="groupSearch" placeholder="Search in group…" />
+
+            <div class="picker-actions-row">
+            <button class="mini-btn" id="groupSelectAll">Select all</button>
+            <button class="mini-btn" id="groupClear">Clear</button>
+            </div>
+
+            <div class="task-list" id="groupList"></div>
+        </div>
+        </div>
+
+        <div class="group-footer">
+        <div class="hint">Tip: use search, then “Select all” to add/remove in bulk.</div>
+        <button class="primary-btn" id="saveGroup">Save</button>
+        </div>
+    </div>
+    <button id="togglePanel" class="task-button" aria-expanded="false">
+    Tasks ▸
+    </button>
+    <main class="calendar-card">
+    <header class="calendar-header">
+        <div class="month-controls">
+        <button class="icon-btn" id="prevMonth">‹</button>
+        <h2 class="month-title" id="month-title">X XXXX</h2>
+        <button class="icon-btn" id="nextMonth">›</button>
+        </div>
+
+        <span class="hint">Click a day to edit</span>
+    </header>
+
+    <section class="calendar-grid" id="calendar-grid">
+        <div class="dow">Sun</div><div class="dow">Mon</div><div class="dow">Tue</div>
+        <div class="dow">Wed</div><div class="dow">Thu</div><div class="dow">Fri</div>
+        <div class="dow">Sat</div>
+    </section>
+    </main>
+
+    <div class="overlay" id="overlay"></div>
+    <aside class="task-panel" id="panel">
+    <header class="panel-header">
+        <h3>Tasks / Events</h3>
+    </header>
+
+    <div id="panel-body" class="panel-body">
+        <p><strong>Selected date:</strong> <span id="selectedDate">None</span></p>
+        <button class="add_task_btn" onclick="set_panel_to_add_task()">Add Task</button>
+        <div id="panel-content">
+        </div>
+    </div>
+    </aside>
+
+    <script src="js/groups.js"></script>
+    <script src="js/task.js"></script>
+    <script>
+        initialize_calender();
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# build artifacts
+build/
+*.o
+*.so
+example.out
+server_settings.json
+*.pem
+
+# editor junk
+*.swp
+*~
+.vscode/
