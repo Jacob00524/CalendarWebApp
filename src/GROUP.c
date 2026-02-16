@@ -156,6 +156,7 @@ HttpResponse handle_taskgroups(HttpRequest *request)
         http_make_basic_headers(response, header_data, sizeof(header_data));
         secure_send(request->connection_info.ssl, header_data, strlen(header_data));
         secure_send(request->connection_info.ssl, content, strlen(content));
+        free(content);
 
         return response;
     }
